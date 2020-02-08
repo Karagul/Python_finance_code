@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+# ####Import Packages
+
 # In[ ]:
 
 
@@ -11,6 +13,8 @@ from datetime import datetime
 from datetime import date
 
 
+# ####Call Data
+
 # In[ ]:
 
 
@@ -18,6 +22,8 @@ today = date.today()
 data = web.DataReader('^GSPC', data_source = 'yahoo', start = '1/1/2008', end = today)
 data.info()
 
+
+# ###Export Data to CSV
 
 # In[ ]:
 
@@ -29,11 +35,15 @@ filetype = '.csv'
 data.to_csv(path+name+date+filetype)
 
 
+# ####Plot Time Series
+
 # In[ ]:
 
 
 data['Close'].plot(grid=True, figsize=(15,9))
 
+
+# ###Plot Rolling Averages
 
 # In[ ]:
 
@@ -60,6 +70,8 @@ data[['Close', '42d', '252d']].plot(grid=True, figsize=(15,9))
 # - ****Buy Signal (go short)****
 #     - the 42d trend is for the first time SD points below the 252d trend
 
+# ####Setup Rules
+
 # In[ ]:
 
 
@@ -82,6 +94,8 @@ data['Regime'] = np.where(data['42-252'] < -SD, -1, data['Regime'])
 data['Regime'].value_counts()
 
 
+# ####Regime Plot
+
 # In[ ]:
 
 
@@ -90,9 +104,18 @@ data['Regime'].plot(lw = 1.5, figsize=(15,9))
 plt.ylim([-1.1, 1.1])
 
 
+# ####Backtest
+
 # In[ ]:
 
 
 data['Market'] = np.log(data['Close'] / data['Close'].shift(1))
 data['Strategy'] = data['Regime'].shift(1) * data['Market']
 data[['Market', 'Strategy']].cumsum().apply(np.exp).plot(grid = True, figsize=(15,9))
+
+
+# In[ ]:
+
+
+
+
